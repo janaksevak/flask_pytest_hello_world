@@ -4,18 +4,7 @@ orbs:
   python: circleci/python@3.1.0
 
 jobs:
-  build:
-    executor: python/default
-    steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: pip
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-
-  test:
+  build_and_test:
     executor: python/default
     steps:
       - checkout
@@ -25,13 +14,13 @@ jobs:
           name: Install pytest
           command: pip install pytest
       - run:
+          name: Install Silenium
+          command: pip install selenium
+      - run:
           name: Run Tests
           command: pytest test_hello_world.py
 
 workflows:
   build_and_test:
     jobs:
-      - build 
-      - test:
-          requires:
-            - build
+      - build_and_test: 
