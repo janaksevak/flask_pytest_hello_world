@@ -33,12 +33,16 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Install pytest
+          command: pip install pytest
+      - run:
           name: Run Tests
           command: pytest test_hello_world
 
 workflows:
   build_and_test:
     jobs:
+      - check_env
       - build
       - test:
           requires:
