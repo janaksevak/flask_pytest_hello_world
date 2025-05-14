@@ -28,6 +28,9 @@ jobs:
             flask run --host=0.0.0.0 --port=5000 &
             sleep 3
       - run:
+          name: Check if Flask is listening
+          command: lsof -i :1234 || echo "Port 1234 is not open"
+      - run:
           name: Test connectivity
           command: |
             # Check if Flask is running
