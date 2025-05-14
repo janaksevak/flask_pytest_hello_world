@@ -25,18 +25,13 @@ jobs:
           name: Run Flask in background
           command: |
             export FLASK_APP=hello_world.py
-            flask run --host=127.0.0.1 --port=5000 &
+            flask run --host=127.0.0.1 --port=5000
             sleep 5
       - run:
           name: Run Tests
           command: |
-            # Set display for Chrome
-            export DISPLAY=:99
-            # Setup virtual display for headless Chrome
-            sudo apt-get install -y xvfb
-            Xvfb :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
             # Run tests with detailed output
-            pytest test_hello_world.py -v
+            pytest test_hello_world.py
 
 workflows:
   build_and_test:
