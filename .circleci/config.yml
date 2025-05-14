@@ -28,24 +28,8 @@ jobs:
             flask run --host=0.0.0.0 --port=5000 &
             sleep 3
             lsof -i :5000 || echo "Port not open"
-      - run:
-          name: Check Flask process
-          command: ps aux | grep flask
-      - run:
-          name: Check container networking
-          command: |
-            apt-get update && apt-get install -y iproute2  # Install `ss` if missing
-            ss -tulnp | grep 5000  # Check if port is bound
-            ip addr show  # Check network interfaces
-      - run:
-          name: Test connectivity
-          command: |
-            # Check if Flask is running
             curl -s http://localhost:5000 || echo "Flask is not running"
-      - run:
-          name: Run Tests
-          command: |
-            # Run tests with detailed output
+            python -c "import requests; print(requests.get('http://localhost:5000').status_code)"
             pytest test_hello_world.py
 
 workflows:
