@@ -11,17 +11,17 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
+      #- browser-tools/install-chromedriver
       - run:
           name: Install dependencies
           command:        |
             pip3 install -r requirements.txt
           # command: pip install -r requirements.txt
-      - run:
-          name: Check ChromeDriver installation
-          command: |
-            chromedriver --version
-            which chromedriver          
+      # - run:
+      #     name: Check ChromeDriver installation
+      #     command: |
+      #       chromedriver --version
+      #       which chromedriver          
       - run:
           name: Run Flask in background
           command: |
