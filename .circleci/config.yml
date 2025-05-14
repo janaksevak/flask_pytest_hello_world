@@ -1,25 +1,24 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
 version: 2.1
 
-# Standard CCI processes
 orbs:
   python: circleci/python@3.1.0
 
-# Define the jobs to be invoked in the workflow - basically the command/scripts that need to be run in the workflow
-  #check env
+jobs:
   check_env:
+    docker:
+      - image: cimg/python:3.10
     steps:
       - run:
-        name: check pwd
-        command: pwd
+          name: check pwd
+          command: pwd
       - run:
-        name: Check dir contents
-        command: ls -altr
-  
-  #tasks
+          name: Check dir contents
+          command: ls -altr
+
   build:
     executor: python/default
     steps:
+      - checkout
       - python/install-packages:
           pkg-manager: pip
       - persist_to_workspace:
@@ -30,17 +29,17 @@ orbs:
   test:
     executor: python/default
     steps:
-      - checkout #fetch the source code
+      - checkout
       - attach_workspace:
-          at: .      
+          at: .
       - run:
           name: Run Tests
           command: pytest test_hello_world
 
-#workflow ot be executed
 workflows:
   build_and_test:
     jobs:
+      - check_env
       - build
       - test:
           requires:
