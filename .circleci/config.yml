@@ -10,8 +10,8 @@ jobs:
       - image: cimg/python:3.12
     steps:
       - checkout
-      # - browser-tools/install-chrome
-      # - browser-tools/install-chromedriver
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run:
           name: Check versions
           command: |
