@@ -2,36 +2,51 @@ version: 2.1
 
 orbs:
   python: circleci/python@3.1.0
-
+  browser-tools: circleci/browser-tools@1.4.1
 jobs:
   build_and_test:
     #executor: python/default
     docker:
-      - image: cimg/python:3.11-browsers
+      - image: cimg/python:3.12-browsers
     steps:
       - checkout
-
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver      
       - run:
           name: Install dependencies
-          command: pip install -r requirements.txt
+          command:        |
+            pip3 install -r requirements.txt
+          # command: pip install -r requirements.txt
+      - run:
+          name: Check ChromeDriver installation
+          command: |
+            chromedriver --version
+            which chromedriver          
       - run:
           name: Run Flask in background
           command: |
             export FLASK_APP=hello_world.py
-            set -x
             flask run --host=0.0.0.0 & 
-            #Wait until the server is accessible
-            for i in {1..30}; do
-              if curl --fail http://127.0.0.1:5000; then
-                echo "Flask server is up!"
+            sleep 8
+      - run:
+          name: Verify Flask is running
+          command: |
+            # Wait for Flask to fully initialize
+            for i in {1..5}; do
+              if curl -s http://localhost:5000 > /dev/null; then
+                echo "Flask is running!"
                 break
               fi
-              echo "Waiting for Flask server..."
-              sleep 1
-            done
+              echo "Waiting for Flask to start... (attempt $i)"
+              sleep 2
+            done            
       - run:
           name: Run Tests
-          command: pytest test_hello_world.py -v
+          command: |
+            # Set display for Chrome
+            export DISPLAY=:99 
+            # Run tests
+            pytest test_hello_world.py -v          
 
 workflows:
   build_and_test:

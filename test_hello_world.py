@@ -27,7 +27,10 @@ def browser():
 
 def test_toggle_world_text(browser):
     # Make sure Flask app is running at this URL
-    browser.get("http://127.0.0.1:5000")  # Flask app must be running
+    browser.get("http://localhost:5000")  # Flask app must be running
+
+    # Add a wait to ensure the page loads
+    browser.implicitly_wait(10)
 
     # Find elements by their IDs
     text = browser.find_element(By.ID, "myText")
