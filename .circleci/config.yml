@@ -17,7 +17,7 @@ jobs:
       - run:
           name: Run App in background
           command: |
-            python hello_world.py & 
+            python hello_world.py --host=0.0.0.0 & 
             sleep 3
       - run:
           name: Run Tests
