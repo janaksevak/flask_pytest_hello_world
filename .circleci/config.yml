@@ -12,21 +12,21 @@ jobs:
     executor: python/default
     steps:
       - python/install-packages:
-        pkg-manager: pip
+          pkg-manager: pip
       - persist_to_workspace:
-        root: .
-        paths:
-          - .
+          root: .
+          paths:
+            - .
 
   test:
     executor: python/default
     steps:
       - checkout #fetch the source code
       - attach_workspace:
-        at: .      
+          at: .      
       - run:
-        name: Run Tests
-        command: pytest test_hello_world
+          name: Run Tests
+          command: pytest test_hello_world
 
 #workflow ot be executed
 workflows:
