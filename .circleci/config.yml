@@ -15,9 +15,10 @@ jobs:
           name: Install dependencies
           command: pip install -r requirements.txt
       - run:
-          name: Run App in background
+          name: Run Flask in background
           command: |
-            python hello_world.py --host=0.0.0.0 & 
+            export FLASK_APP=hello_world.py
+            flask run --host=0.0.0.0 & 
             sleep 3
       - run:
           name: Run Tests
