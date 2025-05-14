@@ -15,6 +15,11 @@ jobs:
           name: Install dependencies
           command: pip install -r requirements.txt
       - run:
+          name: Run App in background
+          command: |
+            python hello_world.py & 
+            sleep 3
+      - run:
           name: Run Tests
           command: pytest test_hello_world.py
 
