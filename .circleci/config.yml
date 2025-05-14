@@ -26,19 +26,7 @@ jobs:
           command: |
             export FLASK_APP=hello_world.py
             flask run --host=0.0.0.0 &
-            sleep 8  # Give Flask more time to start up
-      - run:
-          name: Verify Flask is running
-          command: |
-            # Wait for Flask to fully initialize
-            for i in {1..5}; do
-              if curl -s http://localhost:5000 > /dev/null; then
-                echo "Flask is running!"
-                break
-              fi
-              echo "Waiting for Flask to start... (attempt $i)"
-              sleep 2
-            done
+            sleep 5
       - run:
           name: Run Tests
           command: |
