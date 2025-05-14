@@ -13,7 +13,6 @@ def browser():
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Run Chrome in headless mode
     chrome_options.add_argument("--no-sandbox") 
-    chrome_options.add_argument("--disable-gpu")  # Disable GPU acceleration (for headless mode)
     chrome_options.add_argument("--disable-dev-shm-usage")   # Prevent shared memory crashes
     chrome_options.add_argument(f'--user-data-dir={user_data_dir}')
 
@@ -27,7 +26,7 @@ def browser():
 
 def test_toggle_world_text(browser):
     # Make sure Flask app is running at this URL
-    browser.get("http://127.0.0.1:5000")  # Flask app must be running
+    browser.get("http://127.0.0.1:1234") 
 
     # Add a wait to ensure the page loads
     browser.implicitly_wait(10)
