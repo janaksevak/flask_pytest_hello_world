@@ -29,7 +29,7 @@ jobs:
             sleep 3
       - run:
           name: Check if Flask is listening
-          command: lsof -i :1234 || echo "Port 1234 is not open"
+          command: lsof -i :5000 || echo "Port 1234 is not open"
       - run:
           name: Test connectivity
           command: |
