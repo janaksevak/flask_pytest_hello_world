@@ -3,13 +3,17 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
+import tempfile
 
 @pytest.fixture
 def browser():
+    user_data_dir = tempfile.mkdtemp()
+
     # Set up Chrome options to run in headless mode
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Run Chrome in headless mode
     chrome_options.add_argument("--disable-gpu")  # Disable GPU acceleration (for headless mode)
+    chrome_options.add_argument(f'--user-data-dir={user_data_dir}')
 
     # Start Chrome with the specified options
     driver = webdriver.Chrome(options=chrome_options)
