@@ -7,7 +7,7 @@ jobs:
   build_and_test:
     #executor: python/default
     docker:
-      - image: circleci/python:3.11-browsers
+      - image: cimg/python:3.11-browsers
     steps:
       - checkout
 
