@@ -5,17 +5,15 @@ orbs:
 
 jobs:
   build_and_test:
-    executor: python/default
+    #executor: python/default
+    docker:
+      - image: circleci/python:3.11-browsers
     steps:
       - checkout
-      - attach_workspace:
-          at: .
+
       - run:
-          name: Install pytest
-          command: pip install pytest
-      - run:
-          name: Install Silenium
-          command: pip install selenium
+          name: Install dependencies
+          command: pip install -r requirements.txt
       - run:
           name: Run Tests
           command: pytest test_hello_world.py
