@@ -12,37 +12,21 @@ jobs:
       - checkout
       # Install Chrome and ChromeDriver manually
       - run:
-          name: Install Chrome and ChromeDriver
+          name: Install Chrome
           command: |
-            # Add Chrome's repository
             sudo apt-get update
-            sudo apt-get install -y wget gnupg lsb-release
-            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-            
-            # Install Chrome
-            sudo apt-get update
-            sudo apt-get install -y google-chrome-stable
-            
-            # Print Chrome version
-            CHROME_VERSION=$(google-chrome --version)
-            echo "Installed version of Google Chrome is $CHROME_VERSION"
-            
-            # Download ChromeDriver directly from the latest release
-            # This avoids issues with specific version matching
-            echo "Installing latest stable ChromeDriver..."
-            wget -O /tmp/chromedriver_linux64.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/LATEST_RELEASE_STABLE/linux64/chromedriver-linux64.zip
-            
-            # Extract and install
-            sudo unzip /tmp/chromedriver_linux64.zip -d /tmp/
-            sudo mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/
+            sudo apt-get install -y wget unzip
+            wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            sudo apt install -y ./google-chrome-stable_current_amd64.deb
+      - run:
+          name: Install Chromedriver
+          command: |
+            CHROME_VERSION=$(google-chrome --version | sed 's/[^0-9.]//g' | cut -d '.' -f 1)
+            CHROMEDRIVER_VERSION=$(wget -qO- "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+            wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+            unzip chromedriver_linux64.zip
+            sudo mv chromedriver /usr/local/bin/
             sudo chmod +x /usr/local/bin/chromedriver
-            
-            # Verify installations
-            echo "Chrome version:"
-            google-chrome --version
-            echo "ChromeDriver version:" 
-            chromedriver --version
       - run:
           name: Install dependencies
           command: |
