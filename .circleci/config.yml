@@ -18,11 +18,20 @@ jobs:
           name: Run Flask in background
           command: |
             export FLASK_APP=hello_world.py
+            set -x
             flask run --host=0.0.0.0 & 
-            sleep 3
+            #Wait until the server is accessible
+            for i in {1..30}; do
+              if curl --fail http://127.0.0.1:5000; then
+                echo "Flask server is up!"
+                break
+              fi
+              echo "Waiting for Flask server..."
+              sleep 1
+            done
       - run:
           name: Run Tests
-          command: pytest test_hello_world.py
+          command: pytest test_hello_world.py -v
 
 workflows:
   build_and_test:
