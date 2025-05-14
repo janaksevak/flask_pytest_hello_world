@@ -2,32 +2,57 @@ version: 2.1
 
 orbs:
   python: circleci/python@3.1.0
-  browser-tools: circleci/browser-tools@1.4.0
+
 jobs:
   build_and_test:
-    #executor: python/default
     docker:
-      - image: cimg/python:3.12-browsers
+      # Use an ARM64-compatible image
+      - image: cimg/python:3.12
     steps:
       - checkout
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
+      # Install Chrome and ChromeDriver manually
+      - run:
+          name: Install Chrome and ChromeDriver
+          command: |
+            # Add Chrome's repository
+            sudo apt-get update
+            sudo apt-get install -y wget gnupg lsb-release
+            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+            
+            # Install Chrome
+            sudo apt-get update
+            sudo apt-get install -y google-chrome-stable
+            
+            # Print Chrome version
+            CHROME_VERSION=$(google-chrome --version)
+            echo "Installed version of Google Chrome is $CHROME_VERSION"
+            
+            # Download ChromeDriver directly from the latest release
+            # This avoids issues with specific version matching
+            echo "Installing latest stable ChromeDriver..."
+            wget -O /tmp/chromedriver_linux64.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/LATEST_RELEASE_STABLE/linux64/chromedriver-linux64.zip
+            
+            # Extract and install
+            sudo unzip /tmp/chromedriver_linux64.zip -d /tmp/
+            sudo mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/
+            sudo chmod +x /usr/local/bin/chromedriver
+            
+            # Verify installations
+            echo "Chrome version:"
+            google-chrome --version
+            echo "ChromeDriver version:" 
+            chromedriver --version
       - run:
           name: Install dependencies
-          command:        |
+          command: |
             pip3 install -r requirements.txt
-          # command: pip install -r requirements.txt
-      # - run:
-      #     name: Check ChromeDriver installation
-      #     command: |
-      #       chromedriver --version
-      #       which chromedriver          
       - run:
           name: Run Flask in background
           command: |
             export FLASK_APP=hello_world.py
-            flask run --host=0.0.0.0 & 
-            sleep 8
+            flask run --host=0.0.0.0 &
+            sleep 8  # Give Flask more time to start up
       - run:
           name: Verify Flask is running
           command: |
@@ -39,14 +64,17 @@ jobs:
               fi
               echo "Waiting for Flask to start... (attempt $i)"
               sleep 2
-            done            
+            done
       - run:
           name: Run Tests
           command: |
             # Set display for Chrome
-            export DISPLAY=:99 
-            # Run tests
-            pytest test_hello_world.py -v          
+            export DISPLAY=:99
+            # Setup virtual display for headless Chrome
+            sudo apt-get install -y xvfb
+            Xvfb :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+            # Run tests with detailed output
+            pytest test_hello_world.py -v
 
 workflows:
   build_and_test:
