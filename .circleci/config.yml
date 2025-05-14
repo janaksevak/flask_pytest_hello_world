@@ -25,13 +25,13 @@ jobs:
           name: Run Flask in background
           command: |
             export FLASK_APP=hello_world.py
-            flask run --host=127.0.0.1 --port=5000 &
+            flask run --host=0.0.0.0 --port=5000 &
             sleep 3
       - run:
           name: Test connectivity
           command: |
             # Check if Flask is running
-            curl -s http://127.0.0.1:5000 || echo "Flask is not running"
+            curl -s http://localhost:5000 || echo "Flask is not running"
       - run:
           name: Run Tests
           command: |
