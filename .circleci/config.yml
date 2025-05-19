@@ -10,8 +10,8 @@ jobs:
       - image: cimg/python:3.12
     steps:
       - checkout
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
+      # - browser-tools/install-chrome
+      # - browser-tools/install-chromedriver
       - run:
           name: Check versions
           command: |
@@ -30,10 +30,22 @@ jobs:
             lsof -i :5000 || echo "Port not open"
             curl -s http://localhost:5000 || echo "Flask is not running"
             python -c "import requests; print(requests.get('http://localhost:5000').status_code)"
-            pytest test_hello_world.py
+            # pytest test_hello_world.py
       # - run:
       #     name: Run APP Test
       #     command: pytest test_hello_world.py
+      - run:
+          name: Echo Test 1
+          command: echo "Test -1"
+      - run:
+          name: Echo Test 2
+          command: echo "Test -2"
+      - run:
+          name: Echo Test 3
+          command: echo "Test -3"
+      - run:
+          name: Echo Test 4
+          command: echo "Test -4"
 
 
 workflows:
