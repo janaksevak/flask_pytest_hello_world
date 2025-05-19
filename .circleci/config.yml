@@ -39,6 +39,8 @@ jobs:
 
   test:
     executor: python-executor
+    requires: 
+      - build 
     steps:
       - run:
           name: Echo Test 1
@@ -53,19 +55,35 @@ jobs:
           name: Echo Test 4
           command: echo "Test -4"
 
-  deploy:
+
+  deploy-staging:
     executor: python-executor
+    requires: 
+      - test 
     steps:
       - run:
-          name: Echo Deploy 1
-          command: echo "Deploy -1"
+          name: Echo Deploy Staging 1
+          command: echo "Deploy Staging-1"
       - run:
           name: Echo Deploy 2
-          command: echo "Deploy -2"
+          command: echo "Deploy Staging-2"
+
+  deploy-prod:
+    executor: python-executor
+    requires: 
+      - deploy-staging 
+    steps:
+      - run:
+          name: Echo Deploy Prod 1
+          command: echo "Deploy Prod-1"
+      - run:
+          name: Echo Deploy Prod 2
+          command: echo "Deploy Prod-2"
 
 workflows:
   prod_run:
     jobs:
       - build
       - test
-      - deploy
+      - deploy-staging
+      - deploy-prod
