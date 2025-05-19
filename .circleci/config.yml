@@ -86,4 +86,4 @@ workflows:
             - test
       - deploy-prod:
           requires:
-            - deploy-staging
+            - test
