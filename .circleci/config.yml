@@ -39,8 +39,6 @@ jobs:
 
   test:
     executor: python-executor
-    requires: 
-      - build 
     steps:
       - run:
           name: Echo Test 1
@@ -58,8 +56,6 @@ jobs:
 
   deploy-staging:
     executor: python-executor
-    requires: 
-      - test 
     steps:
       - run:
           name: Echo Deploy Staging 1
@@ -70,8 +66,6 @@ jobs:
 
   deploy-prod:
     executor: python-executor
-    requires: 
-      - deploy-staging 
     steps:
       - run:
           name: Echo Deploy Prod 1
@@ -84,6 +78,12 @@ workflows:
   prod_run:
     jobs:
       - build
-      - test
-      - deploy-staging
-      - deploy-prod
+      - test:
+          requires:
+            - build      
+      - deploy-staging:
+          requires:
+            - test
+      - deploy-prod:
+          requires:
+            - deploy-staging
