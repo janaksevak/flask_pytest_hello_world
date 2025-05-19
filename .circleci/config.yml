@@ -33,7 +33,7 @@ jobs:
           #pytest test_hello_world.py
       - run:
           name: Run APP Test
-          command: test_hello_world.py
+          command: pytest test_hello_world.py
 
 
 workflows:
