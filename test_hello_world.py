@@ -5,6 +5,9 @@ from selenium.webdriver.common.by import By
 import time
 import tempfile
 
+# BROWSER_URL = "http://127.0.0.1:5000" #Local Testing
+BROWSER_URL = "http://localhost:5000" #CI/CD Environment Testing
+
 @pytest.fixture
 def browser():
     user_data_dir = tempfile.mkdtemp()
@@ -24,9 +27,10 @@ def browser():
     # After the test, quit the driver (close the browser)
     driver.quit()
 
-def test_toggle_world_text(browser):
+# Creating multiple separate test cases
+def test_page_text_change(browser):
     # Make sure Flask app is running at this URL
-    browser.get("http://localhost:5000") 
+    browser.get(BROWSER_URL) 
 
     # Add a wait to ensure the page loads
     browser.implicitly_wait(10)
@@ -37,7 +41,6 @@ def test_toggle_world_text(browser):
 
     # Initial state check
     assert text.text == "Hello Current World"
-    assert button.text == "Go to New World"
 
     # Click the button to toggle text
     button.click()
@@ -45,4 +48,44 @@ def test_toggle_world_text(browser):
 
     # Check updated content
     assert text.text == "Hello New World"
+
+    # Click the button to toggle text
+    button.click()
+    time.sleep(0.5)  # Wait for JavaScript to update the DOM
+
+    # Check updated content
+    assert text.text == "Hello Current World"
+
+# Creating multiple separate test cases
+def test_button_text_change(browser):
+    # Make sure Flask app is running at this URL
+    browser.get(BROWSER_URL) 
+
+    # Add a wait to ensure the page loads
+    browser.implicitly_wait(10)
+
+    # Find elements by their IDs
+    button = browser.find_element(By.ID, "myButton")
+
+    # Initial state check
+    assert button.text == "Go to New World"
+
+    # Click the button to toggle text
+    button.click()
+    time.sleep(0.5)  # Wait for JavaScript to update the DOM
+
+    # Check updated content
     assert button.text == "Go to Old World"
+
+    # Click the button to toggle text
+    button.click()
+    time.sleep(0.5)  # Wait for JavaScript to update the DOM
+
+    # Check updated content
+    assert button.text == "Go to New World"    
+
+def test_mock_1():
+    assert (2+3) == 5
+
+def test_mock_2():
+    assert len("Test") == 4
