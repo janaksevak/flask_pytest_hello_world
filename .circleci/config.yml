@@ -19,14 +19,17 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run:
-          name: Check versions
+          name: Check versions (incl.Selenium)
           command: |
             echo "Check versions Done"
             google-chrome --version
-            chromedriver --version          
+            chromedriver --version
+            pip show selenium
       - run:
           name: Install dependencies
-          command: pip3 install -r requirements.txt
+          command: |
+            pip3 install -r requirements.txt
+            pip show selenium
       - run:
           name: Run Flask in background
           command: |
