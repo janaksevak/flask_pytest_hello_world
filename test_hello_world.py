@@ -11,7 +11,7 @@ def browser():
 
     # Set up Chrome options to run in headless mode
     chrome_options = Options()
-    # chrome_options.add_argument("--headless")  # Run Chrome in headless mode
+    chrome_options.add_argument("--headless")  # Run Chrome in headless mode
     chrome_options.add_argument("--no-sandbox") 
     chrome_options.add_argument("--disable-dev-shm-usage")   # Prevent shared memory crashes
     chrome_options.add_argument(f'--user-data-dir={user_data_dir}')
