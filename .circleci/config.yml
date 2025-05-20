@@ -6,19 +6,16 @@ orbs:
 executors:
   python-executor:
     docker:
+      # Standard Cimg Python image with browsers
       - image: cimg/python:3.10-browsers
 
 jobs:
-
   # Build Job
   build:
-    docker:
-      # Use an ARM64-compatible image
-      - image: cimg/python:3.10-browsers
+    executor: python-executor
+
     steps:
       - checkout
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
       
       # Verify browser versions for debugging
       - run:
@@ -31,16 +28,50 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            pip3 install -r requirements.txt
-  
+            # pip3 install -r requirements.txt
+            python -m venv venv && venv/bin/pip install -r requirements.txt
+            mkdir test_results
+
+      # Persist the workspace for later jobs
+      - persist_to_workspace:
+          root: .  # Root directory of the workspace to persist
+          paths:    # Paths relative to root that will be persisted
+            - venv
+            - test_results
+
+
   # Test Job
   test:
     executor: python-executor
+
     steps:
+      - checkout
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
+
+      # Attach the workspace from the build job
+      - attach_workspace:
+          at: .  # Directory to attach the workspace to
+
+      # Verify browser versions for debugging
+      - run:
+          name: Check versions
+          command: |
+            google-chrome --version
+            chromedriver --version
+
+      # Verify local enviroment
+      - run:
+          name: Verify Environment
+          command: |
+            ls -altr
+            env
+
       # Run pytest and capture logs
       - run:
           name: Run Test and Capture Logs
-          command: |
+          command: |          
+            source venv/bin/activate
             flask run --host=0.0.0.0 --port=5000 &
             pytest test_hello_world.py > test_results/test_output.log 2>&1
 
@@ -85,4 +116,4 @@ workflows:
             - test
       - deploy-prod:
           requires:
-            - test
+            - deploy-staging
