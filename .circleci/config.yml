@@ -74,7 +74,10 @@ jobs:
           name: Run Test and Capture Logs
           command: |          
             source venv/bin/activate
-            python hello_world.py
+            # python hello_world.py
+            export FLASK_APP=hello_world.py
+            flask run --host=0.0.0.0 --port=5000 &
+            sleep 3
             pytest test_hello_world.py > test_results/test_output.log 2>&1
 
       # Store test results and artifacts
