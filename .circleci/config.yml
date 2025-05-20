@@ -19,12 +19,11 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run:
-          name: Check versions (incl.Selenium)
+          name: Check versions
           command: |
             echo "Check versions Done"
             google-chrome --version
             chromedriver --version
-            pip show selenium
       - run:
           name: Install dependencies
           command: |
