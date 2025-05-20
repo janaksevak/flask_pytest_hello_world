@@ -1,12 +1,10 @@
-import pytest
+import pytest, time, tempfile 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import time
-import tempfile
 
-# BROWSER_URL = "http://127.0.0.1:5000" #Local Testing
-BROWSER_URL = "http://localhost:5000" #CI/CD Environment Testing
+BROWSER_URL = "http://127.0.0.1:5000" #Local Testing
+# BROWSER_URL = "http://localhost:5000" #CI/CD Environment Testing
 
 @pytest.fixture
 def browser():
@@ -85,7 +83,9 @@ def test_button_text_change(browser):
     assert button.text == "Go to New World"    
 
 def test_mock_1():
+    time.sleep(3)
     assert (2+3) == 5
 
 def test_mock_2():
+    time.sleep(2)
     assert len("Test") == 4
