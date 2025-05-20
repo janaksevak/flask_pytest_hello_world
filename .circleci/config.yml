@@ -15,22 +15,21 @@ jobs:
     executor: python-executor
 
     steps:
-      - checkout
-      
-      # Verify browser versions for debugging
+      # Create Environment
       - run:
-          name: Check versions
+          name: Create Environment
           command: |
-            google-chrome --version
-            chromedriver --version          
+            python -m venv venv && venv/bin/pip install -r requirements.txt
+            mkdir test_results
+
 
       # Install Python dependencies
       - run:
-          name: Install dependencies
+          name: Install Python dependencies
           command: |
             # pip3 install -r requirements.txt
-            python -m venv venv && venv/bin/pip install -r requirements.txt
-            mkdir test_results
+            source venv/bin/activate
+            pip install -r requirements.txt
 
       # Persist the workspace for later jobs
       - persist_to_workspace:
