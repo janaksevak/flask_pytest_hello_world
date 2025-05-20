@@ -43,7 +43,8 @@ jobs:
           command: mkdir test_results
       - run:
           name: Run Hello World Tests
-          command: pytest test_hello_world.py > test_results/test_output.log 2>&1
+          # command: pytest test_hello_world.py > test_results/test_output.log 2>&1
+          command: pytest --driver chrome test_hello_world.py > test_results/test_output.log 2>&1
       - store_test_results:
           path: test_results
       - store_artifacts:
