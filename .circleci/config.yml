@@ -32,14 +32,6 @@ jobs:
           name: Install dependencies
           command: |
             pip3 install -r requirements.txt
-
-      # Kill any lingering chrome processes
-      - run:
-          name: Kill existing Chrome processes
-          command: |
-            pkill -f chrome || true
-            pkill -f chromium || true
-            pkill -f chromedriver || true            
   
   # Test Job
   test:
