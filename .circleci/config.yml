@@ -7,7 +7,8 @@ orbs:
 executors:
   python-executor:
     docker:
-      - image: cimg/python:3.10
+      - image: cimg/python:3.9-browsers
+      # - image: cimg/python:3.9.22-browsers
 
 jobs:
   build:
@@ -21,8 +22,8 @@ jobs:
           name: Check versions
           command: |
             echo "Check versions Done"
-            # google-chrome --version
-            # chromedriver --version          
+            google-chrome --version
+            chromedriver --version          
       - run:
           name: Install dependencies
           command: pip3 install -r requirements.txt
@@ -35,7 +36,16 @@ jobs:
             lsof -i :5000 || echo "Port not open"
             curl -s http://localhost:5000 || echo "Flask is not running"
             python -c "import requests; print(requests.get('http://localhost:5000').status_code)"
-            # pytest test_hello_world.py
+      - run:
+          name: Create Log Directory
+          command: mkdir test_results
+      - run:
+          name: Run Hello World Tests
+          command: pytest test_hello_world.py > test_results/test_output.log 2>&1
+      - store_test_results:
+          path: test_results
+      - store_artifacts:
+          path: test_results
 
   test:
     executor: python-executor
