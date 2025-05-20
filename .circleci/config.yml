@@ -7,7 +7,7 @@ orbs:
 executors:
   python-executor:
     docker:
-      - image: cimg/python:3.9-browsers
+      - image: cimg/python:3.10-browsers
       # - image: cimg/python:3.9.22-browsers
 
 jobs:
@@ -41,6 +41,12 @@ jobs:
       - run:
           name: Create Log Directory
           command: mkdir test_results
+      - run:
+          name: Kill existing Chrome processes
+          command: |
+            pkill -f chrome || true
+            pkill -f chromium || true
+            pkill -f chromedriver || true          
       - run:
           name: Run Hello World Tests
           # command: pytest test_hello_world.py > test_results/test_output.log 2>&1
