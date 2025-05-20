@@ -28,7 +28,7 @@ jobs:
           name: Install dependencies
           command: |
             pip3 install -r requirements.txt
-            pip show selenium
+            # pip show selenium
       - run:
           name: Run Flask in background
           command: |
