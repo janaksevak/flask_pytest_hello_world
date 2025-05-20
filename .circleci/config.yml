@@ -77,8 +77,12 @@ jobs:
             # python hello_world.py
             export FLASK_APP=hello_world.py
             flask run --host=0.0.0.0 --port=5000 &
-            sleep 3
+            sleep 2
+            # Capture for CircleCI test results
+            pytest test_hello_world.py > -v --junitxml=test_results/junit.xml
+            # Capture for CircleCI artifacts
             pytest test_hello_world.py > test_results/test_output.log 2>&1
+
 
       # Store test results and artifacts
       - store_test_results:
