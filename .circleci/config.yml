@@ -1,98 +1,86 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@3.1.0
   browser-tools: circleci/browser-tools@1.5.3
 
 executors:
   python-executor:
     docker:
       - image: cimg/python:3.10-browsers
-      # - image: cimg/python:3.9.22-browsers
 
 jobs:
+
+  # Build Job
   build:
     docker:
-      - image: cimg/python:3.12
+      # Use an ARM64-compatible image
+      - image: cimg/python:3.10-browsers
     steps:
       - checkout
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
+      
+      # Verify browser versions for debugging
       - run:
           name: Check versions
           command: |
-            echo "Check versions Done"
             google-chrome --version
-            chromedriver --version
+            chromedriver --version          
+
+      # Install Python dependencies
       - run:
           name: Install dependencies
           command: |
             pip3 install -r requirements.txt
-            # pip show selenium
-      - run:
-          name: Run Flask in background
-          command: |
-            export FLASK_APP=hello_world.py
-            flask run --host=0.0.0.0 --port=5000 &
-            sleep 3
-            lsof -i :5000 || echo "Port not open"
-            curl -s http://localhost:5000 || echo "Flask is not running"
-            python -c "import requests; print(requests.get('http://localhost:5000').status_code)"
-      - run:
-          name: Create Log Directory
-          command: mkdir test_results
+
+      # Kill any lingering chrome processes
       - run:
           name: Kill existing Chrome processes
           command: |
             pkill -f chrome || true
             pkill -f chromium || true
-            pkill -f chromedriver || true          
+            pkill -f chromedriver || true            
+  
+  # Test Job
+  test:
+    executor: python-executor
+    steps:
+      # Run pytest and capture logs
       - run:
-          name: Run Hello World Tests
-          # command: pytest test_hello_world.py > test_results/test_output.log 2>&1
-          command: pytest --driver chrome test_hello_world.py > test_results/test_output.log 2>&1
+          name: Run Test and Capture Logs
+          command: |
+            flask run --host=0.0.0.0 --port=5000 &
+            pytest test_hello_world.py > test_results/test_output.log 2>&1
+
+      # Store test results and artifacts
       - store_test_results:
           path: test_results
       - store_artifacts:
           path: test_results
 
-  test:
-    executor: python-executor
-    steps:
-      - run:
-          name: Echo Test 1
-          command: echo "Test -1"
-      - run:
-          name: Echo Test 2
-          command: echo "Test -2"
-      - run:
-          name: Echo Test 3
-          command: echo "Test -3"
-      - run:
-          name: Echo Test 4
-          command: echo "Test -4"
-
-
+  # Mock Deploy Staging
   deploy-staging:
     executor: python-executor
     steps:
       - run:
-          name: Echo Deploy Staging 1
-          command: echo "Deploy Staging-1"
+          name: Deploy Cluster 1
+          command: echo "Successfully Deployed to Staging Cluster 1"
       - run:
-          name: Echo Deploy 2
-          command: echo "Deploy Staging-2"
+          name: Deploy Deploy 2
+          command: echo "Successfully Deployed to Staging Cluster 2"
 
+  # Mock Deploy Prod
   deploy-prod:
     executor: python-executor
     steps:
       - run:
-          name: Echo Deploy Prod 1
-          command: echo "Deploy Prod-1"
+          name: Deploy Prod 1
+          command: echo "Successfully Deployed to Prod Cluster 1"
       - run:
-          name: Echo Deploy Prod 2
-          command: echo "Deploy Prod-2"
+          name: Deploy Prod 2
+          command: echo "Successfully Deployed to Prod Cluster 2"
 
+# Setting up the workflow
 workflows:
   prod_run:
     jobs:

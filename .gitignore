@@ -1,2 +1,8 @@
 __pycache__
 .circleci/v1-config_yaml.working
+bak/config.yml
+bak/conftest.py
+bak/requirements.txt
+bak/test_hello_world.py
+bak/v1-config_yaml.working
+.DS_Store
